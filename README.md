@@ -82,6 +82,9 @@ After a test run:
 npx playwright show-report
 ```
 
+## Live Report
+[View latest Playwright report](https://nazaraqaengineer.github.io/test_task)
+
 ## Project layout
 
 | Path | Purpose |
