@@ -1,0 +1,10 @@
+services:
+  playwright:
+    build: .
+    volumes:
+      - ./playwright-report:/app/playwright-report
+    environment:
+      CI: "true"
+      BASE_URL: http://127.0.0.1:4173
+      TEST_EMAIL: applicant@example.com
+      TEST_PASSWORD: Password123!

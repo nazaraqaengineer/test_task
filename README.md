@@ -1,60 +1,105 @@
-# CivicFlow Demo
+# CivicFlow Demo — Playwright Test Suite (UITOP)
 
-CivicFlow Demo is a local web app for AQA candidate exercises. It provides a fake applicant portal with sign-in, dashboard navigation, a Projects page, and custom project creation for Playwright testing practice.
+Automated end-to-end and API tests for the **CivicFlow Demo** applicant portal (React + Vite), built with **Playwright** and **TypeScript** for the UITOP AQA exercise.
 
-All data is fake, browser-local, and stored only in `localStorage`. The app does not connect to a real backend, real customers, real jurisdictions, or production services.
+Coverage includes authentication, project management, cross-browser and mobile viewports, Automation Exercise API checks, Docker execution, and GitHub Actions CI with HTML report publishing to GitHub Pages.
+
+All application data is fake and stored in browser `localStorage`. Tests reset storage before each scenario.
 
 ## Prerequisites
 
 - Node.js 20 or newer
 - npm
-- Playwright browsers for local e2e testing
+- Docker (optional, for containerized test runs)
 
-## Install
+## Installation
 
 ```bash
 npm install
 npx playwright install
 ```
 
-## Run The App
+For CI-style runs with system dependencies:
+
+```bash
+npx playwright install --with-deps
+```
+
+## Environment variables
+
+Copy the example file and adjust values if needed:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `BASE_URL` | App URL for Playwright (`vite preview`) | `http://127.0.0.1:4173` |
+| `TEST_EMAIL` | Demo applicant email | `applicant@example.com` |
+| `TEST_PASSWORD` | Demo applicant password | `Password123!` |
+
+CI workflows set these explicitly; locally they are loaded from `.env` via `dotenv`.
+
+## Run the app locally
 
 ```bash
 npm run dev
 ```
 
-Local app URL: `http://localhost:5173`
+Open [http://localhost:5173](http://localhost:5173).
 
-## Run Tests
+Playwright uses the production preview server at `BASE_URL` (default [http://127.0.0.1:4173](http://127.0.0.1:4173)), started automatically via `playwright.config.ts`.
+
+## Run tests
 
 ```bash
 npm run test:e2e
 ```
 
-The e2e suite includes only a minimal starter check. Candidates are expected to
-add meaningful scenario coverage as part of the exercise.
-For manual testing, use the Vite dev server on `http://localhost:5173`. The
-Playwright starter check builds the app and runs against Vite preview on
-`http://127.0.0.1:4173` so CI tests the production bundle.
-
-Useful scripts:
+Other useful commands:
 
 ```bash
 npm run build
 npm run test:e2e:ui
+npx playwright test --project=chromium-desktop
+npx playwright show-report
 ```
 
-## CI And Docker
+## Run with Docker
 
-GitHub Actions and Docker support are intentionally left for the candidate task.
-See `TASK.md` for the expected CI and bonus Docker deliverables.
+```bash
+docker compose up
+```
 
-## Fake Credentials
+The Playwright HTML report is written to `./playwright-report` on the host.
 
-- Email: `applicant@example.com`
-- Password: `Password123!`
-- User role: `Applicant`
+## View report
 
-## Local Data
+After a test run:
 
-The app seeds fake projects on first load and stores created projects in `localStorage`. To reset the app manually, clear browser `localStorage` or use the visible `Reset demo data` button on the Projects page.
+```bash
+npx playwright show-report
+```
+
+## Project layout
+
+| Path | Purpose |
+|------|---------|
+| `pages/` | Page Object Model classes |
+| `tests/e2e/` | UI tests (auth, projects) |
+| `tests/api/` | API tests |
+| `tests/fixtures/` | Shared Playwright fixtures (browser monitoring) |
+| `TEST_DOCUMENTATION.md` | Test cases, bugs, console/network notes |
+| `.github/workflows/` | GitHub Actions (native and Docker) |
+
+## CI
+
+| Workflow | Description |
+|----------|-------------|
+| `playwright.yml` | Node 20, cached `node_modules`, browsers, build, test, artifact, GitHub Pages on `main` |
+| `playwright-docker.yml` | Same via `docker compose` |
+
+## Documentation
+
+See [TEST_DOCUMENTATION.md](./TEST_DOCUMENTATION.md) for the full test case matrix, bugs found, and console/network error notes.
